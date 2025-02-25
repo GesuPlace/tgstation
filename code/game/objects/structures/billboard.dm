@@ -1,7 +1,7 @@
 /obj/structure/billboard
 	name = "blank billboard"
 	desc = "A blank billboard, with space for all kinds of advertising."
-	icon = 'icons/obj/billboard.dmi'
+	icon = 'icons/obj/fluff/billboard.dmi'
 	icon_state = "billboard_blank"
 	plane = ABOVE_GAME_PLANE
 	max_integrity = 1000
@@ -47,7 +47,7 @@
 
 /obj/structure/billboard/twenty_four_seven
 	name = "\improper 24-Seven billboard"
-	desc = "A billboard advertising 24-Seven's new range of limited-edition Slushee flavours. 24-Seven: All Day, Everyday."
+	desc = "A billboard advertising 24-Seven's new range of limited-edition Slushee flavours. 24-Seven: All Day, Every Day."
 	icon_state = "billboard_twenty_four_seven"
 
 /obj/structure/billboard/starway
@@ -94,3 +94,13 @@
 	name = "\improper Fortune Teller billboard"
 	desc = "A billboard advertising Fortune Telling. Apparently it's done by real psykers!"
 	icon_state = "billboard_fortune_tell"
+
+/obj/structure/billboard/Phone_booth
+	name = "\improper Holophone Billboard"
+	desc = "A billboard advertising Holophones. Interstellar calls for a affordable 49.99 credits with duty free snacks!"
+	icon_state = "billboard_phone"
+
+/obj/structure/billboard/american_diner
+	name = "\improper All-American Diner billboard"
+	desc = "A billboard advertising an old-school 1950's themed restaurant franchise \"All-American Diner\""
+	icon_state = "billboard_american_diner"
