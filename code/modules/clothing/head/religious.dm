@@ -4,7 +4,7 @@
 
 /obj/item/clothing/head/chaplain/clownmitre
 	name = "Hat of the Honkmother"
-	desc = "It's hard for parishoners to see a banana peel on the floor when they're looking up at your glorious chapeau."
+	desc = "It's hard for parishioners to see a banana peel on the floor when they're looking up at your glorious chapeau."
 	icon_state = "clownmitre"
 
 /obj/item/clothing/head/chaplain/kippah
@@ -25,7 +25,7 @@
 /obj/item/clothing/head/chaplain/taqiyah/white/Initialize(mapload)
 	. = ..()
 
-	create_storage(type = /datum/storage/pockets/small)
+	create_storage(storage_type = /datum/storage/pockets/small)
 
 /obj/item/clothing/head/chaplain/taqiyah/red
 	name = "red taqiyah"
@@ -35,4 +35,4 @@
 /obj/item/clothing/head/chaplain/taqiyah/red/Initialize(mapload)
 	. = ..()
 
-	create_storage(type = /datum/storage/pockets/small)
+	create_storage(storage_type = /datum/storage/pockets/small)

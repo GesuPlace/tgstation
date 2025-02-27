@@ -23,10 +23,10 @@
 		return
 
 	src.hallucinator = hallucinator
-	RegisterSignal(hallucinator, COMSIG_PARENT_QDELETING, PROC_REF(target_deleting))
+	RegisterSignal(hallucinator, COMSIG_QDELETING, PROC_REF(target_deleting))
 	GLOB.all_ongoing_hallucinations += src
 
-/// Signal proc for [COMSIG_PARENT_QDELETING], if the mob hallucinating us is deletes, we should delete too.
+/// Signal proc for [COMSIG_QDELETING], if the mob hallucinating us is deletes, we should delete too.
 /datum/hallucination/proc/target_deleting()
 	SIGNAL_HANDLER
 
@@ -39,7 +39,7 @@
 
 /datum/hallucination/Destroy()
 	if(hallucinator)
-		UnregisterSignal(hallucinator, COMSIG_PARENT_QDELETING)
+		UnregisterSignal(hallucinator, COMSIG_QDELETING)
 		hallucinator = null
 
 	GLOB.all_ongoing_hallucinations -= src
@@ -107,6 +107,8 @@
 	var/image_layer = MOB_LAYER
 	/// The plane of the image
 	var/image_plane = GAME_PLANE
+	/// Should this image holder persist if there are no seers for it?
+	var/persist_without_seers = FALSE
 
 /obj/effect/client_image_holder/Initialize(mapload, list/mobs_which_see_us)
 	. = ..()
@@ -121,10 +123,7 @@
 
 	who_sees_us = list()
 	for(var/mob/seer as anything in mobs_which_see_us)
-		RegisterSignal(seer, COMSIG_MOB_LOGIN, PROC_REF(show_image_to))
-		RegisterSignal(seer, COMSIG_PARENT_QDELETING, PROC_REF(remove_seer))
-		who_sees_us += seer
-		show_image_to(seer)
+		add_seer(seer)
 
 /obj/effect/client_image_holder/Destroy(force)
 	if(shown_image)
@@ -141,16 +140,22 @@
 		return
 	SET_PLANE(shown_image, PLANE_TO_TRUE(shown_image.plane), new_turf)
 
+/obj/effect/client_image_holder/proc/add_seer(mob/new_seer)
+	RegisterSignal(new_seer, COMSIG_MOB_LOGIN, PROC_REF(show_image_to))
+	RegisterSignal(new_seer, COMSIG_QDELETING, PROC_REF(remove_seer))
+	who_sees_us += new_seer
+	show_image_to(new_seer)
+
 /// Signal proc to clean up references if people who see us are deleted.
 /obj/effect/client_image_holder/proc/remove_seer(mob/source)
 	SIGNAL_HANDLER
 
-	UnregisterSignal(source, list(COMSIG_MOB_LOGIN, COMSIG_PARENT_QDELETING))
+	UnregisterSignal(source, list(COMSIG_MOB_LOGIN, COMSIG_QDELETING))
 	hide_image_from(source)
 	who_sees_us -= source
 
 	// No reason to exist, anymore
-	if(!QDELETED(src) && !length(who_sees_us))
+	if(!QDELETED(src) && !length(who_sees_us) && !persist_without_seers)
 		qdel(src)
 
 /// Generates the image which we take on.
@@ -197,7 +202,7 @@
 		return
 	regenerate_image()
 
-/obj/effect/client_image_holder/singularity_pull()
+/obj/effect/client_image_holder/singularity_pull(atom/singularity, current_size)
 	return
 
 /obj/effect/client_image_holder/singularity_act()
@@ -218,15 +223,15 @@
 		stack_trace("[type] was created without a parent hallucination.")
 		return INITIALIZE_HINT_QDEL
 
-	RegisterSignal(parent, COMSIG_PARENT_QDELETING, PROC_REF(parent_deleting))
+	RegisterSignal(parent, COMSIG_QDELETING, PROC_REF(parent_deleting))
 	src.parent = parent
 
 /obj/effect/client_image_holder/hallucination/Destroy(force)
-	UnregisterSignal(parent, COMSIG_PARENT_QDELETING)
+	UnregisterSignal(parent, COMSIG_QDELETING)
 	parent = null
 	return ..()
 
-/// Signal proc for [COMSIG_PARENT_QDELETING], if our associated hallucination deletes, we should too
+/// Signal proc for [COMSIG_QDELETING], if our associated hallucination deletes, we should too
 /obj/effect/client_image_holder/hallucination/proc/parent_deleting(datum/source)
 	SIGNAL_HANDLER
 

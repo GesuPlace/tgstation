@@ -1,7 +1,7 @@
 /obj/structure/sign/flag
 	name = "flag of the IT Division"
 	desc = "The flag of the Nanotrasen IT Division. Bears a symbol that only makes sense to those that understand."
-	icon = 'icons/obj/flags.dmi'
+	icon = 'icons/obj/fluff/flags.dmi'
 	icon_state = "flag_coder"
 
 /obj/structure/sign/flag/nanotrasen
@@ -34,7 +34,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/flag/tizira, 32)
 
 /obj/structure/sign/flag/mothic
 	name = "flag of the Grand Nomad Fleet"
-	desc = "The flag of the Mothic Grand Nomad Fleet. A classic naval ensign, its use has superceded the old national flag which can be seen in its canton."
+	desc = "The flag of the Mothic Grand Nomad Fleet. A classic naval ensign, its use has superseded the old national flag which can be seen in its canton."
 	icon_state = "flag_mothic"
 
 MAPPING_DIRECTIONAL_HELPERS(/obj/structure/sign/flag/mothic, 32)

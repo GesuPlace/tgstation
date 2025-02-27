@@ -17,7 +17,7 @@ SUBSYSTEM_DEF(overlays)
 /// Don't have access to that type tho, so this is the best you're gonna get
 /proc/overlays2text(list/overlays)
 	var/list/unique_overlays = list()
-	// As anything because we're basically doing type coerrsion, rather then actually filtering for mutable apperances
+	// As anything because we're basically doing type coercion, rather then actually filtering for mutable appearances
 	for(var/mutable_appearance/overlay as anything in overlays)
 		var/key = "[overlay.icon]-[overlay.icon_state]-[overlay.dir]"
 		unique_overlays[key] += 1
@@ -47,8 +47,7 @@ SUBSYSTEM_DEF(overlays)
 		if (istext(overlay))
 			// This is too expensive to run normally but running it during CI is a good test
 			if (PERFORM_ALL_TESTS(focus_only/invalid_overlays))
-				var/list/icon_states_available = icon_states(icon)
-				if(!(overlay in icon_states_available))
+				if(!icon_exists(icon, overlay))
 					var/icon_file = "[icon]" || "Unknown Generated Icon"
 					stack_trace("Invalid overlay: Icon object '[icon_file]' [REF(icon)] used in '[src]' [type] is missing icon state [overlay].")
 					continue
@@ -81,6 +80,7 @@ SUBSYSTEM_DEF(overlays)
 		return
 	STAT_START_STOPWATCH
 	overlays += build_appearance_list(add_overlays)
+	VALIDATE_OVERLAY_LIMIT(src)
 	POST_OVERLAY_CHANGE(src)
 	STAT_STOP_STOPWATCH
 	STAT_LOG_ENTRY(SSoverlays.stats, type)
@@ -98,11 +98,13 @@ SUBSYSTEM_DEF(overlays)
 			overlays = cached_other
 		else
 			overlays = null
+		VALIDATE_OVERLAY_LIMIT(src)
 		POST_OVERLAY_CHANGE(src)
 		STAT_STOP_STOPWATCH
 		STAT_LOG_ENTRY(SSoverlays.stats, type)
 	else if(cached_other)
 		overlays += cached_other
+		VALIDATE_OVERLAY_LIMIT(src)
 		POST_OVERLAY_CHANGE(src)
 		STAT_STOP_STOPWATCH
 		STAT_LOG_ENTRY(SSoverlays.stats, type)
@@ -208,7 +210,7 @@ SUBSYSTEM_DEF(overlays)
 			continue
 		if(name == "vars") // Go away
 			continue
-		if(name == "comp_lookup") // This is just gonna happen with marked datums, don't care
+		if(name == "_listen_lookup") // This is just gonna happen with marked datums, don't care
 			continue
 		if(name == "overlays")
 			first.realize_overlays()

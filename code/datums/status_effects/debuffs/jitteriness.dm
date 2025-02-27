@@ -29,11 +29,11 @@
 /datum/status_effect/jitter/get_examine_text()
 	switch(duration - world.time)
 		if(5 MINUTES to INFINITY)
-			return span_boldwarning("[owner.p_they(TRUE)] [owner.p_are()] convulsing violently!")
+			return span_boldwarning("[owner.p_They()] [owner.p_are()] convulsing violently!")
 		if(3 MINUTES to 5 MINUTES)
-			return span_warning("[owner.p_they(TRUE)] [owner.p_are()] extremely jittery.")
+			return span_warning("[owner.p_They()] [owner.p_are()] extremely jittery.")
 		if(1 MINUTES to 3 MINUTES)
-			return span_warning("[owner.p_they(TRUE)] [owner.p_are()] twitching ever so slightly.")
+			return span_warning("[owner.p_They()] [owner.p_are()] twitching ever so slightly.")
 
 	return null
 
@@ -43,10 +43,10 @@
 
 	qdel(src)
 
-/datum/status_effect/jitter/tick()
+/datum/status_effect/jitter/tick(seconds_between_ticks)
 	// Resting helps against jitter
 	// While resting, we lose 8 seconds of duration (4 additional ticks) per tick
-	if(owner.resting && remove_duration(4 * initial(tick_interval)))
+	if(owner.resting && remove_duration(4 * seconds_between_ticks))
 		return
 
 	var/time_left_in_seconds = (duration - world.time) / 10
@@ -56,7 +56,7 @@
 /// jitter_amount will only apply up to 300 (maximum jitter effect).
 /mob/living/proc/do_jitter_animation(jitter_amount = 100)
 	var/amplitude = min(4, (jitter_amount / 100) + 1)
-	var/pixel_x_diff = rand(-amplitude, amplitude)
-	var/pixel_y_diff = rand(-amplitude / 3, amplitude / 3)
-	animate(src, pixel_x = pixel_x_diff, pixel_y = pixel_y_diff , time = 0.2 SECONDS, loop = 6, flags = ANIMATION_RELATIVE|ANIMATION_PARALLEL)
-	animate(pixel_x = -pixel_x_diff , pixel_y = -pixel_y_diff , time = 0.2 SECONDS, flags = ANIMATION_RELATIVE)
+	var/pixel_w_diff = rand(-amplitude, amplitude)
+	var/pixel_z_diff = rand(-amplitude / 3, amplitude / 3)
+	animate(src, pixel_w = pixel_w_diff, pixel_z = pixel_z_diff , time = 0.2 SECONDS, loop = 6, flags = ANIMATION_RELATIVE|ANIMATION_PARALLEL)
+	animate(pixel_w = -pixel_w_diff , pixel_z = -pixel_z_diff , time = 0.2 SECONDS, flags = ANIMATION_RELATIVE)
